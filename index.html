@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiks Travel Tours</title>
+    <link rel="icon" type="image/png" href="assets/images/kikslogo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="assets/images/kikslogo.png" alt="Kiks Travel Tours Logo">
+            </div>
+            <div class="nav-links">
+                <a href="#accueil" class="nav-link">Accueil</a>
+                <a href="#destinations" class="nav-link">Destinations</a>
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#reservation" class="nav-link">Réservation</a>
+                <a href="#offres" class="nav-link">Offres</a>
+                <a href="#galerie" class="nav-link">Galerie</a>
+                <a href="#partenaires" class="nav-link">Partenaires</a>
+            </div>
+            <div class="burger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="accueil" class="hero">
+            <div class="hero-content">
+                <h1>Découvrez le monde avec Kiks Travel Tours</h1>
+                <p>Votre partenaire de confiance pour des voyages inoubliables</p>
+                <a href="#reservation" class="cta-button">Réserver maintenant</a>
+            </div>
+        </section>
+
+        <section id="destinations" class="destinations">
+            <h2>Nos destinations populaires</h2>
+            <div class="destination-grid">
+                <!-- Les cartes de destination seront ajoutées ici -->
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <h2>Nos services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-plane"></i>
+                    <h3>Vols</h3>
+                    <p>Les meilleures offres de vols</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-hotel"></i>
+                    <h3>Hébergements</h3>
+                    <p>Des hôtels soigneusement sélectionnés</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Circuits</h3>
+                    <p>Des itinéraires sur mesure</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="reservation" class="section">
+            <div class="container">
+                <h2>Réservation</h2>
+                <form id="reservation-form" class="reservation-form">
+                    <!-- Coordonnées -->
+                    <div class="form-group">
+                        <h3>Vos coordonnées</h3>
+                        <input type="text" id="nom" name="nom" placeholder="Nom complet" required>
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                        <input type="tel" id="telephone" name="telephone" placeholder="Téléphone" required>
+                    </div>
+
+                    <!-- Voyage -->
+                    <div class="form-group">
+                        <h3>Détails du voyage</h3>
+                        <div class="voyage-details">
+                            <div class="depart-container">
+                                <label for="lieu-depart">Lieu de départ</label>
+                                <input type="text" id="lieu-depart" name="lieuDepart" placeholder="Ville de départ" required>
+                            </div>
+
+                            <div class="destination-container">
+                                <label for="destination">Destination</label>
+                                <input type="text" id="destination" name="destination" placeholder="Ville de destination" required>
+                            </div>
+
+                            <div class="escales-container">
+                                <h4>Escales (optionnel)</h4>
+                                <div class="escales-list">
+                                    <div class="escale-input">
+                                        <input type="text" name="escales[]" placeholder="Ville d'escale (optionnel)">
+                                    </div>
+                                </div>
+                                <button type="button" id="add-escale" class="btn-secondary">+ Ajouter une escale</button>
+                            </div>
+
+                            <div class="dates-container">
+                                <div class="date-input">
+                                    <label for="date-depart">Date de départ</label>
+                                    <input type="date" id="date-depart" name="date-depart" required>
+                                </div>
+                                <div class="date-input">
+                                    <label for="date-retour">Date de retour</label>
+                                    <input type="date" id="date-retour" name="date-retour" required>
+                                </div>
+                            </div>
+
+                            <div class="classe-container">
+                                <label for="classe">Classe</label>
+                                <select id="classe" name="classe" required>
+                                    <option value="">Sélectionnez la classe</option>
+                                    <option value="economique">Économique</option>
+                                    <option value="affaires">Affaires</option>
+                                    <option value="premiere">Première classe</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message supplémentaire -->
+                    <div class="form-group">
+                        <textarea id="message" name="message" placeholder="Message supplémentaire (optionnel)"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Réserver</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="offres" class="offres">
+            <h2>Nos Offres Spéciales</h2>
+            <div class="offres-grid">
+                <div class="offre-card">
+                    <img src="assets/images/paris.jpg" alt="Paris">
+                    <div class="offre-content">
+                        <h3>Week-end à Paris</h3>
+                        <p class="prix">À partir de 299€</p>
+                        <ul class="offre-details">
+                            <li>3 jours / 2 nuits</li>
+                            <li>Hôtel 4 étoiles</li>
+                            <li>Petit-déjeuner inclus</li>
+                            <li>Visite guidée</li>
+                        </ul>
+                        <button class="reserver-button">Réserver</button>
+                    </div>
+                </div>
+                <!-- Ajoutez d'autres cartes d'offres ici -->
+            </div>
+        </section>
+
+        <section id="galerie" class="galerie">
+            <h2>Nos Voyages de Groupe</h2>
+            <div class="galerie-grid">
+                <!-- Les images seront ajoutées dynamiquement via JavaScript -->
+            </div>
+        </section>
+
+        <section id="partenaires" class="partenaires">
+            <h2>Nos Partenaires</h2>
+            <div class="logos">
+                <div class="logos-slide">
+                    <img src="assets/images/iata.svg" alt="IATA">
+                    <img src="assets/images/amadeus.png" alt="Amadeus">
+                    <img src="assets/images/sabre.svg" alt="Sabre">
+                    <img src="assets/images/TBO.jpg" alt="TBO.com">
+                    <img src="assets/images/iata.svg" alt="IATA">
+                    <img src="assets/images/amadeus.png" alt="Amadeus">
+                    <img src="assets/images/sabre.svg" alt="Sabre">
+                    <img src="assets/images/TBO.jpg" alt="TBO.com">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pop-up de confirmation -->
+    <div id="confirmation-popup" class="popup-overlay">
+        <div class="popup-content">
+            <i class="fas fa-check-circle"></i>
+            <h3>Réservation Confirmée !</h3>
+            <p>Votre demande de réservation a été envoyée avec succès.</p>
+            <p>Vous recevrez bientôt un email de confirmation.</p>
+            <button class="btn-primary" onclick="closePopup()">OK</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section contact-section">
+                    <h3>Contact</h3>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <p>info@kikstravel.com</p>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div class="phone-numbers">
+                                <span class="phone-number">+221 33 824 42 46</span>
+                                <span class="phone-number">+221 33 824 28 45</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <p>Horaires d'ouverture:<br>
+                            Lundi - Vendredi<br>
+                            8h - 13h | 15h - 18h</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section social-section">
+                    <h3>Suivez-nous</h3>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kiks Travel Tours. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
