@@ -1,0 +1,17 @@
+This directory contains placeholder images for the website.
+
+Required images:
+1. hero-bg.jpg - Hero section background
+2. kikslogo.png - Company logo
+3. paris.jpg - Paris destination image
+4. voyage1.jpg - Gallery image 1
+5. voyage2.jpg - Gallery image 2
+6. voyage3.jpg - Gallery image 3
+7. voyage4.jpg - Gallery image 4
+8. earth-map.jpg - Earth texture for globe
+9. iata.svg - IATA logo
+10. amadeus.png - Amadeus logo
+11. sabre.svg - Sabre logo
+12. TBO.jpg - TBO.com logo
+
+Please add appropriate images to this directory.

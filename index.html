@@ -10,6 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Ajout de SweetAlert2 pour les jolies popups -->
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Scripts Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
     <header>
@@ -72,87 +78,70 @@
             </div>
         </section>
 
-        <section id="reservation" class="section">
-            <div id="flight-map-container"></div>
+        <section id="reservation" class="reservation-section">
             <div class="container">
-                <h2>Réservation</h2>
-                <form id="reservation-form" class="reservation-form">
-                    <div class="form-group">
-                        <label for="depart">Départ</label>
-                        <select id="depart" name="depart" required>
-                            <option value="">Choisissez votre aéroport de départ</option>
-                            <option value="DSS">Dakar (DSS)</option>
-                            <option value="CDG">Paris (CDG)</option>
-                            <option value="JFK">New York (JFK)</option>
-                            <option value="DXB">Dubai (DXB)</option>
-                            <option value="MAD">Madrid (MAD)</option>
-                            <option value="LHR">Londres (LHR)</option>
-                            <option value="IST">Istanbul (IST)</option>
-                            <option value="CAS">Casablanca (CAS)</option>
-                            <option value="ACC">Accra (ACC)</option>
-                            <option value="LOS">Lagos (LOS)</option>
-                            <option value="ABJ">Abidjan (ABJ)</option>
-                            <option value="NKC">Nouakchott (NKC)</option>
-                            <option value="BKO">Bamako (BKO)</option>
-                            <option value="OUA">Ouagadougou (OUA)</option>
-                            <option value="COO">Cotonou (COO)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="destination">Destination</label>
-                        <select id="destination" name="destination" required>
-                            <option value="">Choisissez votre destination</option>
-                            <option value="CDG">Paris (CDG)</option>
-                            <option value="JFK">New York (JFK)</option>
-                            <option value="DXB">Dubai (DXB)</option>
-                            <option value="MAD">Madrid (MAD)</option>
-                            <option value="LHR">Londres (LHR)</option>
-                            <option value="IST">Istanbul (IST)</option>
-                            <option value="CAS">Casablanca (CAS)</option>
-                            <option value="ACC">Accra (ACC)</option>
-                            <option value="LOS">Lagos (LOS)</option>
-                            <option value="ABJ">Abidjan (ABJ)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="escale">Escale</label>
-                        <select id="escale" name="escale">
-                            <option value="">Vol direct</option>
-                        </select>
-                    </div>
-                    <!-- Voyage -->
-                    <div class="form-group">
-                        <h3>Détails du voyage</h3>
-                        <div class="voyage-details">
-                            <div class="dates-container">
-                                <div class="date-input">
-                                    <label for="date-depart">Date de départ</label>
-                                    <input type="date" id="date-depart" name="date-depart" required>
-                                </div>
-                                <div class="date-input">
-                                    <label for="date-retour">Date de retour</label>
-                                    <input type="date" id="date-retour" name="date-retour" required>
-                                </div>
-                            </div>
+                <h2>Réservation de Vol</h2>
+                <form id="booking-form" class="booking-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Nom complet</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
 
-                            <div class="classe-container">
-                                <label for="classe">Classe</label>
-                                <select id="classe" name="classe" required>
-                                    <option value="">Sélectionnez la classe</option>
-                                    <option value="economique">Économique</option>
-                                    <option value="affaires">Affaires</option>
-                                    <option value="premiere">Première classe</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="departure">Départ</label>
+                            <select id="departure" name="departure" required>
+                                <option value="">Sélectionnez un aéroport</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destination">Destination</label>
+                            <select id="destination" name="destination" required>
+                                <option value="">Sélectionnez un aéroport</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="layover">Escale (optionnel)</label>
+                            <select id="layover" name="layover">
+                                <option value="">Vol direct</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="travel-class">Classe</label>
+                            <select id="travel-class" name="travelClass" required>
+                                <option value="economy">Économique</option>
+                                <option value="business">Affaires</option>
+                                <option value="first">Première</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="departure-date">Date de départ</label>
+                            <input type="date" id="departure-date" name="departureDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="return-date">Date de retour</label>
+                            <input type="date" id="return-date" name="returnDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="passengers">Nombre de passagers</label>
+                            <input type="number" id="passengers" name="passengers" min="1" max="9" value="1" required>
                         </div>
                     </div>
 
-                    <!-- Message supplémentaire -->
-                    <div class="form-group">
-                        <textarea id="message" name="message" placeholder="Message supplémentaire (optionnel)"></textarea>
+                    <div class="form-group submit-group">
+                        <button type="submit" class="submit-button">Réserver maintenant</button>
                     </div>
-
-                    <button type="submit" class="btn-primary">Réserver</button>
                 </form>
             </div>
         </section>
@@ -174,7 +163,6 @@
                         <button class="reserver-button">Réserver</button>
                     </div>
                 </div>
-                <!-- Ajoutez d'autres cartes d'offres ici -->
             </div>
         </section>
 
@@ -202,61 +190,124 @@
         </section>
     </main>
 
-    <!-- Pop-up de confirmation -->
-    <div id="confirmation-popup" class="popup-overlay">
-        <div class="popup-content">
-            <i class="fas fa-check-circle"></i>
-            <h3>Réservation Confirmée !</h3>
-            <p>Votre demande de réservation a été envoyée avec succès.</p>
-            <p>Nous vous contacterons bientôt pour finaliser les détails.</p>
-            <button onclick="closePopup()">Fermer</button>
-        </div>
-    </div>
-
     <footer>
         <div class="footer-content">
             <div class="footer-info">
                 <div class="footer-section contact-section">
                     <h3>Contact</h3>
                     <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <p>info@kikstravel.com</p>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <div class="phone-numbers">
-                                <span class="phone-number">+221 33 824 42 46</span>
-                                <span class="phone-number">+221 33 824 28 45</span>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-clock"></i>
-                            <p>Horaires d'ouverture:<br>
-                            Lundi - Vendredi<br>
-                            8h - 13h | 15h - 18h</p>
-                        </div>
+                        <p><i class="fas fa-phone"></i> +221 77 777 77 77</p>
+                        <p><i class="fas fa-envelope"></i> contact@kikstraveltours.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Dakar, Sénégal</p>
                     </div>
                 </div>
                 <div class="footer-section social-section">
                     <h3>Suivez-nous</h3>
                     <div class="social-links">
-                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
                     </div>
+                </div>
+                <div class="footer-section newsletter-section">
+                    <h3>Newsletter</h3>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Votre email">
+                        <button type="submit">S'abonner</button>
+                    </form>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Kiks Travel Tours. Tous droits réservés.</p>
+                <p>&copy; 2023 Kiks Travel Tours. Tous droits réservés.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Données des aéroports
+            const airports = {
+                'DSS': { name: 'Dakar' },
+                'CDG': { name: 'Paris' },
+                'JFK': { name: 'New York' },
+                'DXB': { name: 'Dubai' },
+                'LHR': { name: 'Londres' },
+                'MAD': { name: 'Madrid' }
+            };
+
+            // Remplir les sélecteurs d'aéroports
+            const departureSelect = document.getElementById('departure');
+            const destinationSelect = document.getElementById('destination');
+            const layoverSelect = document.getElementById('layover');
+
+            for (const [code, airport] of Object.entries(airports)) {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = `${airport.name} (${code})`;
+                departureSelect.appendChild(option.cloneNode(true));
+                destinationSelect.appendChild(option.cloneNode(true));
+                layoverSelect.appendChild(option.cloneNode(true));
+            }
+
+            // Validation du formulaire
+            const form = document.getElementById('booking-form');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const bookingData = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch('/api/book', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(bookingData)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        let message = 'Notre équipe va étudier votre demande et vous contactera rapidement avec nos meilleures offres.';
+                        if (result.dev) {
+                            message += '\n\n(Mode développement : l\'email n\'a pas été envoyé car la clé API n\'est pas configurée)';
+                        }
+
+                        Swal.fire({
+                            title: 'Réservation reçue!',
+                            text: message,
+                            icon: 'success',
+                            confirmButtonText: 'Parfait!',
+                            confirmButtonColor: '#4CAF50'
+                        });
+                        this.reset();
+                    } else {
+                        throw new Error(result.message || 'Erreur lors de la réservation');
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: error.message || 'Une erreur est survenue. Veuillez réessayer plus tard.',
+                        icon: 'error',
+                        confirmButtonColor: '#f44336'
+                    });
+                }
+            });
+
+            // Menu burger
+            const burgerMenu = document.querySelector('.burger-menu');
+            const navLinks = document.querySelector('.nav-links');
+
+            burgerMenu.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                burgerMenu.classList.toggle('active');
+            });
+        });
+    </script>
     <script src="script.js"></script>
     <script src="globe.js"></script>
-    <script src="flight-map.js"></script>
 </body>
 </html>

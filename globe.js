@@ -1,59 +1,84 @@
 // Globe 3D
-let scene, camera, renderer, globe;
+let scene, camera, renderer, controls, earth;
 
 function init() {
     // Création de la scène
     scene = new THREE.Scene();
 
     // Configuration de la caméra
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 200;
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 250;
 
-    // Configuration du renderer
+    // Configuration du rendu
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    
     const container = document.getElementById('globe-container');
-    container.appendChild(renderer.domElement);
+    
+    if (container) {
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        
+        renderer.setSize(containerWidth, containerHeight);
+        renderer.setClearColor(0x000000, 0);
+        container.appendChild(renderer.domElement);
 
-    // Création du globe
-    const geometry = new THREE.SphereGeometry(100, 64, 64);
-    const texture = new THREE.TextureLoader().load('assets/images/earth-map.jpg');
-    const material = new THREE.MeshPhongMaterial({
-        map: texture,
-        transparent: true,
-        opacity: 0.9
-    });
-    globe = new THREE.Mesh(geometry, material);
-    scene.add(globe);
+        // Création de la Terre avec texture
+        const geometry = new THREE.SphereGeometry(80, 64, 64);
+        const texture = new THREE.TextureLoader().load('assets/images/earth-map.jpg');
+        const material = new THREE.MeshPhongMaterial({
+            map: texture,
+            transparent: true,
+            opacity: 0.9
+        });
+        earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
 
-    // Ajout de lumière
-    const ambientLight = new THREE.AmbientLight(0x404040);
-    scene.add(ambientLight);
+        // Ajout de l'éclairage
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 3, 5);
-    scene.add(directionalLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(100, 100, 100);
+        scene.add(pointLight);
 
-    // Animation
-    animate();
+        // Configuration des contrôles
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.rotateSpeed = 0.5;
+        controls.enableZoom = true;
+        controls.minDistance = 150;
+        controls.maxDistance = 400;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1;
+
+        // Gestion du redimensionnement
+        window.addEventListener('resize', onWindowResize, false);
+
+        // Démarrage de l'animation
+        animate();
+    }
+}
+
+function onWindowResize() {
+    const container = document.getElementById('globe-container');
+    if (container && camera && renderer) {
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        
+        camera.aspect = containerWidth / containerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(containerWidth, containerHeight);
+    }
 }
 
 function animate() {
     requestAnimationFrame(animate);
-    globe.rotation.y += 0.002;
-    renderer.render(scene, camera);
+    if (earth && controls) {
+        earth.rotation.y += 0.002;
+        controls.update();
+        renderer.render(scene, camera);
+    }
 }
 
-// Gestion du redimensionnement
-window.addEventListener('resize', onWindowResize, false);
-
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-// Initialisation au chargement de la page
-window.addEventListener('load', init);
+// Initialisation lors du chargement de la page
+document.addEventListener('DOMContentLoaded', init);
