@@ -36,6 +36,7 @@
 
     <main>
         <section id="accueil" class="hero">
+            <div id="globe-container"></div>
             <div class="hero-content">
                 <h1>Découvrez le monde avec Kiks Travel Tours</h1>
                 <p>Votre partenaire de confiance pour des voyages inoubliables</p>
@@ -72,41 +73,57 @@
         </section>
 
         <section id="reservation" class="section">
+            <div id="flight-map-container"></div>
             <div class="container">
                 <h2>Réservation</h2>
                 <form id="reservation-form" class="reservation-form">
-                    <!-- Coordonnées -->
                     <div class="form-group">
-                        <h3>Vos coordonnées</h3>
-                        <input type="text" id="nom" name="nom" placeholder="Nom complet" required>
-                        <input type="email" id="email" name="email" placeholder="Email" required>
-                        <input type="tel" id="telephone" name="telephone" placeholder="Téléphone" required>
+                        <label for="depart">Départ</label>
+                        <select id="depart" name="depart" required>
+                            <option value="">Choisissez votre aéroport de départ</option>
+                            <option value="DSS">Dakar (DSS)</option>
+                            <option value="CDG">Paris (CDG)</option>
+                            <option value="JFK">New York (JFK)</option>
+                            <option value="DXB">Dubai (DXB)</option>
+                            <option value="MAD">Madrid (MAD)</option>
+                            <option value="LHR">Londres (LHR)</option>
+                            <option value="IST">Istanbul (IST)</option>
+                            <option value="CAS">Casablanca (CAS)</option>
+                            <option value="ACC">Accra (ACC)</option>
+                            <option value="LOS">Lagos (LOS)</option>
+                            <option value="ABJ">Abidjan (ABJ)</option>
+                            <option value="NKC">Nouakchott (NKC)</option>
+                            <option value="BKO">Bamako (BKO)</option>
+                            <option value="OUA">Ouagadougou (OUA)</option>
+                            <option value="COO">Cotonou (COO)</option>
+                        </select>
                     </div>
-
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <select id="destination" name="destination" required>
+                            <option value="">Choisissez votre destination</option>
+                            <option value="CDG">Paris (CDG)</option>
+                            <option value="JFK">New York (JFK)</option>
+                            <option value="DXB">Dubai (DXB)</option>
+                            <option value="MAD">Madrid (MAD)</option>
+                            <option value="LHR">Londres (LHR)</option>
+                            <option value="IST">Istanbul (IST)</option>
+                            <option value="CAS">Casablanca (CAS)</option>
+                            <option value="ACC">Accra (ACC)</option>
+                            <option value="LOS">Lagos (LOS)</option>
+                            <option value="ABJ">Abidjan (ABJ)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="escale">Escale</label>
+                        <select id="escale" name="escale">
+                            <option value="">Vol direct</option>
+                        </select>
+                    </div>
                     <!-- Voyage -->
                     <div class="form-group">
                         <h3>Détails du voyage</h3>
                         <div class="voyage-details">
-                            <div class="depart-container">
-                                <label for="lieu-depart">Lieu de départ</label>
-                                <input type="text" id="lieu-depart" name="lieuDepart" placeholder="Ville de départ" required>
-                            </div>
-
-                            <div class="destination-container">
-                                <label for="destination">Destination</label>
-                                <input type="text" id="destination" name="destination" placeholder="Ville de destination" required>
-                            </div>
-
-                            <div class="escales-container">
-                                <h4>Escales (optionnel)</h4>
-                                <div class="escales-list">
-                                    <div class="escale-input">
-                                        <input type="text" name="escales[]" placeholder="Ville d'escale (optionnel)">
-                                    </div>
-                                </div>
-                                <button type="button" id="add-escale" class="btn-secondary">+ Ajouter une escale</button>
-                            </div>
-
                             <div class="dates-container">
                                 <div class="date-input">
                                     <label for="date-depart">Date de départ</label>
@@ -191,8 +208,8 @@
             <i class="fas fa-check-circle"></i>
             <h3>Réservation Confirmée !</h3>
             <p>Votre demande de réservation a été envoyée avec succès.</p>
-            <p>Vous recevrez bientôt un email de confirmation.</p>
-            <button class="btn-primary" onclick="closePopup()">OK</button>
+            <p>Nous vous contacterons bientôt pour finaliser les détails.</p>
+            <button onclick="closePopup()">Fermer</button>
         </div>
     </div>
 
@@ -235,6 +252,11 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="script.js"></script>
+    <script src="globe.js"></script>
+    <script src="flight-map.js"></script>
 </body>
 </html>
