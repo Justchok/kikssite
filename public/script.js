@@ -166,6 +166,20 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // Vérification des champs requis
+            const requiredFields = ['name', 'email', 'departure', 'destination', 'departure-date', 'return-date', 'travel-class', 'passengers'];
+            const missingFields = requiredFields.filter(field => !document.getElementById(field).value.trim());
+            
+            if (missingFields.length > 0) {
+                Swal.fire({
+                    title: 'Champs manquants',
+                    text: 'Veuillez remplir tous les champs obligatoires',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+            
             // Afficher un indicateur de chargement
             Swal.fire({
                 title: 'Envoi en cours...',
@@ -177,12 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const formData = {
-                nom: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                telephone: document.getElementById('telephone')?.value || '',
+                nom: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telephone: document.getElementById('telephone')?.value.trim() || '',
                 lieuDepart: document.getElementById('departure').value,
                 destination: document.getElementById('destination').value,
-                escales: document.getElementById('layover').value,
+                escales: document.getElementById('layover').value || 'Vol direct',
                 dateDepart: document.getElementById('departure-date').value,
                 dateRetour: document.getElementById('return-date').value,
                 classe: document.getElementById('travel-class').value,
@@ -190,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
+                console.log('Envoi des données:', formData);
                 const response = await fetch('/api/send-email', {
                     method: 'POST',
                     headers: {
@@ -199,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 const data = await response.json();
+                console.log('Réponse du serveur:', data);
 
                 if (response.ok) {
                     Swal.fire({
@@ -215,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Erreur lors de l\'envoi:', error);
                 Swal.fire({
                     title: 'Erreur',
-                    text: 'Une erreur est survenue lors de l\'envoi de votre réservation. Veuillez réessayer.',
+                    text: error.message || 'Une erreur est survenue lors de l\'envoi de votre réservation. Veuillez réessayer.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });

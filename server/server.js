@@ -17,10 +17,26 @@ app.use(express.json());
 app.use(express.static('public')); // Servir les fichiers du dossier public
 app.use('/admin', express.static('admin')); // Servir les fichiers du dossier admin
 
+// Middleware pour gérer les erreurs
+app.use((err, req, res, next) => {
+    console.error('Erreur middleware:', err);
+    res.status(500).json({
+        message: 'Erreur serveur',
+        error: err.message
+    });
+});
+
 // Route pour l'envoi d'email
 app.post('/api/send-email', async (req, res) => {
     console.log('Réception d\'une nouvelle demande de réservation:', req.body);
     try {
+        if (!req.body || !req.body.nom || !req.body.email) {
+            return res.status(400).json({
+                message: 'Données de réservation invalides',
+                error: 'Les champs nom et email sont requis'
+            });
+        }
+
         const {
             nom,
             email,
@@ -103,7 +119,15 @@ app.post('/api/send-email', async (req, res) => {
     }
 });
 
+// Gérer toutes les autres routes non trouvées
+app.use((req, res) => {
+    res.status(404).json({
+        message: 'Route non trouvée',
+        path: req.path
+    });
+});
+
 // Démarrage du serveur
 app.listen(port, () => {
-    console.log(`Serveur démarré sur http://localhost:${port}`);
+    console.log(`Serveur démarré sur le port ${port}`);
 });
