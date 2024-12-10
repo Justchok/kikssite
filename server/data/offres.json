@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "titre": "Escapade à Paris",
+        "description": "Découvrez la ville lumière avec notre offre spéciale incluant vol + hôtel",
+        "prix": 450000,
+        "devise": "XOF",
+        "image": "/assets/images/paris.jpg"
+    },
+    {
+        "id": 2,
+        "titre": "Safari au Kenya",
+        "description": "Vivez une aventure inoubliable dans la savane africaine",
+        "prix": 850000,
+        "devise": "XOF",
+        "image": "/assets/images/kenya.jpg"
+    },
+    {
+        "id": 3,
+        "titre": "Dubaï Luxe",
+        "description": "Séjour de luxe à Dubaï avec excursions incluses",
+        "prix": 750000,
+        "devise": "XOF",
+        "image": "/assets/images/dubai.jpg"
+    }
+]

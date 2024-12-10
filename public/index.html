@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kiks Travel Tours</title>
-    <link rel="icon" type="image/png" href="assets/images/kikslogo.png">
+    <link rel="icon" type="image/png" href="./assets/images/kikslogo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
     <header>
         <nav class="navbar">
             <div class="logo">
-                <img src="assets/images/kikslogo.png" alt="Kiks Travel Tours Logo">
+                <img src="./assets/images/kikslogo.png" alt="Kiks Travel Tours Logo">
             </div>
             <div class="nav-links">
                 <a href="#accueil" class="nav-link">Accueil</a>
@@ -150,7 +150,7 @@
             <h2>Nos Offres Spéciales</h2>
             <div class="offres-grid">
                 <div class="offre-card">
-                    <img src="assets/images/paris.jpg" alt="Paris">
+                    <img src="./assets/images/paris.jpg" alt="Paris">
                     <div class="offre-content">
                         <h3>Week-end à Paris</h3>
                         <p class="prix">À partir de 299€</p>
@@ -177,14 +177,14 @@
             <h2>Nos Partenaires</h2>
             <div class="logos">
                 <div class="logos-slide">
-                    <img src="assets/images/iata.svg" alt="IATA">
-                    <img src="assets/images/amadeus.png" alt="Amadeus">
-                    <img src="assets/images/sabre.svg" alt="Sabre">
-                    <img src="assets/images/TBO.jpg" alt="TBO.com">
-                    <img src="assets/images/iata.svg" alt="IATA">
-                    <img src="assets/images/amadeus.png" alt="Amadeus">
-                    <img src="assets/images/sabre.svg" alt="Sabre">
-                    <img src="assets/images/TBO.jpg" alt="TBO.com">
+                    <img src="./assets/images/iata.svg" alt="IATA">
+                    <img src="./assets/images/amadeus.png" alt="Amadeus">
+                    <img src="./assets/images/sabre.svg" alt="Sabre">
+                    <img src="./assets/images/TBO.jpg" alt="TBO.com">
+                    <img src="./assets/images/iata.svg" alt="IATA">
+                    <img src="./assets/images/amadeus.png" alt="Amadeus">
+                    <img src="./assets/images/sabre.svg" alt="Sabre">
+                    <img src="./assets/images/TBO.jpg" alt="TBO.com">
                 </div>
             </div>
         </section>
@@ -259,7 +259,7 @@
                 const bookingData = Object.fromEntries(formData.entries());
 
                 try {
-                    const response = await fetch('/api/book', {
+                    const response = await fetch('/api/booking', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

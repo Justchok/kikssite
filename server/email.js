@@ -5,21 +5,34 @@ const dotenv = require('dotenv');
 // Charger la configuration depuis env.config
 dotenv.config({ path: path.join(__dirname, '..', 'env.config') });
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Vérifier la clé API
+const apiKey = process.env.RESEND_API_KEY;
+console.log('API Key configurée:', apiKey ? 'Oui' : 'Non');
+
+if (!apiKey) {
+    console.error('Erreur: RESEND_API_KEY n\'est pas configurée');
+    process.exit(1);
+}
+
+const resend = new Resend(apiKey);
 
 async function sendBookingConfirmation(bookingData) {
     try {
-        const { data, error } = await resend.emails.send({
-            from: 'Kiks Travel <reservation@kikstravel.com>',
-            to: [bookingData.email],
-            subject: 'Confirmation de votre demande de réservation - Kiks Travel',
+        console.log('Tentative d\'envoi d\'email avec Resend...');
+        console.log('Données de réservation:', bookingData);
+
+        // Utiliser l'adresse email de test de Resend
+        const emailData = {
+            from: 'onboarding@resend.dev',
+            to: ['delivered@resend.dev', bookingData.email], // Ajouter l'adresse de test
+            subject: 'Test - Confirmation de réservation Kiks Travel',
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h1 style="color: #2c3e50;">Merci pour votre demande de réservation!</h1>
+                    <h1 style="color: #2c3e50;">Test - Merci pour votre demande de réservation!</h1>
                     
                     <p>Cher(e) ${bookingData.name},</p>
                     
-                    <p>Nous avons bien reçu votre demande de réservation avec les détails suivants :</p>
+                    <p>Ceci est un email de test. Nous avons reçu votre demande avec les détails suivants :</p>
                     
                     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
                         <p><strong>Départ:</strong> ${bookingData.departure}</p>
@@ -31,18 +44,27 @@ async function sendBookingConfirmation(bookingData) {
                         <p><strong>Nombre de passagers:</strong> ${bookingData.passengers}</p>
                     </div>
                     
-                    <p>Notre équipe va étudier votre demande et vous contactera dans les plus brefs délais avec nos meilleures offres personnalisées.</p>
+                    <p>Notre équipe va étudier votre demande et vous contactera dans les plus brefs délais.</p>
                     
                     <p style="margin-top: 30px;">Cordialement,<br>L'équipe Kiks Travel</p>
                 </div>
             `
+        };
+
+        console.log('Configuration email:', {
+            from: emailData.from,
+            to: emailData.to,
+            subject: emailData.subject
         });
+
+        const { data, error } = await resend.emails.send(emailData);
 
         if (error) {
             console.error('Erreur Resend:', error);
             return { success: false, error: error.message };
         }
 
+        console.log('Email envoyé avec succès:', data);
         return { success: true, data };
     } catch (error) {
         console.error('Erreur d\'envoi d\'email:', error);
@@ -50,6 +72,4 @@ async function sendBookingConfirmation(bookingData) {
     }
 }
 
-module.exports = {
-    sendBookingConfirmation
-};
+module.exports = { sendBookingConfirmation };

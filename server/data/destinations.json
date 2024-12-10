@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "titre": "Paris",
+        "description": "La ville de l'amour et de la gastronomie",
+        "image": "/assets/images/destinations/paris.jpg",
+        "prix": 450000,
+        "devise": "XOF"
+    },
+    {
+        "id": 2,
+        "titre": "Dubaï",
+        "description": "Le luxe et la modernité au cœur du désert",
+        "image": "/assets/images/destinations/dubai.jpg",
+        "prix": 750000,
+        "devise": "XOF"
+    },
+    {
+        "id": 3,
+        "titre": "Istanbul",
+        "description": "La rencontre de l'Orient et de l'Occident",
+        "image": "/assets/images/destinations/istanbul.jpg",
+        "prix": 550000,
+        "devise": "XOF"
+    },
+    {
+        "id": 4,
+        "titre": "New York",
+        "description": "La ville qui ne dort jamais",
+        "image": "/assets/images/destinations/newyork.jpg",
+        "prix": 950000,
+        "devise": "XOF"
+    }
+]

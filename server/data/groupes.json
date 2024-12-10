@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "titre": "La Mecque 2023",
+        "image": "/assets/images/gallery/mecque2023.jpg"
+    },
+    {
+        "id": 2,
+        "titre": "Tour d'Europe 2023",
+        "image": "/assets/images/gallery/europe2023.jpg"
+    },
+    {
+        "id": 3,
+        "titre": "Safari Kenya 2023",
+        "image": "/assets/images/gallery/kenya2023.jpg"
+    },
+    {
+        "id": 4,
+        "titre": "Dubaï 2023",
+        "image": "/assets/images/gallery/dubai2023.jpg"
+    }
+]
