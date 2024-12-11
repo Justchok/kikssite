@@ -10,12 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Ajout de SweetAlert2 pour les jolies popups -->
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Scripts Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="globe.js"></script>
+    <script src="flight-map.js"></script>
+    <script src="script.js"></script>
 </head>
 <body>
     <header>
@@ -73,7 +74,7 @@
         <section id="reservation" class="reservation-section">
             <div class="container">
                 <h2>Réservation de Vol</h2>
-                <form id="booking-form" class="booking-form">
+                <form id="booking-form" class="booking-form" action="javascript:void(0);">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="name">Nom complet</label>
@@ -87,23 +88,17 @@
 
                         <div class="form-group">
                             <label for="departure">Départ</label>
-                            <select id="departure" name="departure" required>
-                                <option value="">Sélectionnez un aéroport</option>
-                            </select>
+                            <input type="text" id="departure" name="departure" placeholder="Ville ou pays de départ" required>
                         </div>
 
                         <div class="form-group">
                             <label for="destination">Destination</label>
-                            <select id="destination" name="destination" required>
-                                <option value="">Sélectionnez un aéroport</option>
-                            </select>
+                            <input type="text" id="destination" name="destination" placeholder="Ville ou pays de destination" required>
                         </div>
 
                         <div class="form-group">
                             <label for="layover">Escale (optionnel)</label>
-                            <select id="layover" name="layover">
-                                <option value="">Vol direct</option>
-                            </select>
+                            <input type="text" id="layover" name="layover" placeholder="Ville d'escale (optionnel)">
                         </div>
 
                         <div class="form-group">
@@ -228,20 +223,6 @@
                 'MAD': { name: 'Madrid' }
             };
 
-            // Remplir les sélecteurs d'aéroports
-            const departureSelect = document.getElementById('departure');
-            const destinationSelect = document.getElementById('destination');
-            const layoverSelect = document.getElementById('layover');
-
-            for (const [code, airport] of Object.entries(airports)) {
-                const option = document.createElement('option');
-                option.value = code;
-                option.textContent = `${airport.name} (${code})`;
-                departureSelect.appendChild(option.cloneNode(true));
-                destinationSelect.appendChild(option.cloneNode(true));
-                layoverSelect.appendChild(option.cloneNode(true));
-            }
-
             // Validation du formulaire
             const form = document.getElementById('booking-form');
             form.addEventListener('submit', async function(e) {
@@ -299,7 +280,5 @@
             });
         });
     </script>
-    <script src="script.js"></script>
-    <script src="globe.js"></script>
 </body>
 </html>

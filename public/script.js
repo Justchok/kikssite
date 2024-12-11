@@ -1,9 +1,12 @@
 // Gestion du menu burger
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Script chargé et prêt');
+
     const burgerMenu = document.querySelector('.burger-menu');
     const navLinks = document.querySelector('.nav-links');
 
     burgerMenu.addEventListener('click', () => {
+        console.log('Menu burger cliqué');
         navLinks.classList.toggle('active');
     });
 
@@ -160,258 +163,250 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Gestion du formulaire de réservation
+    // Gestion du formulaire de réservation de vol
     const bookingForm = document.getElementById('booking-form');
     if (bookingForm) {
+        console.log('Formulaire de réservation trouvé');
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('Soumission du formulaire de réservation de vol...');
             
-            // Vérification des champs requis
-            const requiredFields = ['name', 'email', 'departure', 'destination', 'departure-date', 'return-date', 'travel-class', 'passengers'];
-            const missingFields = requiredFields.filter(field => !document.getElementById(field).value.trim());
-            
-            if (missingFields.length > 0) {
-                Swal.fire({
-                    title: 'Champs manquants',
-                    text: 'Veuillez remplir tous les champs obligatoires',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-            
-            // Afficher un indicateur de chargement
-            Swal.fire({
-                title: 'Envoi en cours...',
-                text: 'Veuillez patienter pendant que nous traitons votre demande',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-            
-            const formData = {
-                nom: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                telephone: document.getElementById('telephone')?.value.trim() || '',
-                lieuDepart: document.getElementById('departure').value,
-                destination: document.getElementById('destination').value,
-                escales: document.getElementById('layover').value || 'Vol direct',
-                dateDepart: document.getElementById('departure-date').value,
-                dateRetour: document.getElementById('return-date').value,
-                classe: document.getElementById('travel-class').value,
-                passagers: document.getElementById('passengers').value
-            };
-
             try {
-                console.log('Envoi des données:', formData);
-                const response = await fetch('/api/send-email', {
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    flightDetails: {
+                        departure: document.getElementById('departure').value,
+                        destination: document.getElementById('destination').value,
+                        layover: document.getElementById('layover').value,
+                        travelClass: document.getElementById('travel-class').value,
+                        departureDate: document.getElementById('departure-date').value,
+                        returnDate: document.getElementById('return-date').value,
+                        passengers: document.getElementById('passengers').value
+                    }
+                };
+
+                console.log('Données du formulaire:', formData);
+
+                const response = await fetch('http://localhost:5002/api/public/book-flight', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(formData)
                 });
 
-                const data = await response.json();
-                console.log('Réponse du serveur:', data);
+                console.log('Statut de la réponse:', response.status);
+                const contentType = response.headers.get('content-type');
+                console.log('Type de contenu:', contentType);
 
-                if (response.ok) {
-                    Swal.fire({
-                        title: 'Réservation envoyée !',
-                        text: 'Nous vous contacterons bientôt pour confirmer votre réservation.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                    bookingForm.reset();
-                } else {
-                    throw new Error(data.error || 'Erreur lors de l\'envoi');
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Réponse du serveur non-ok:', response.status, errorText);
+                    throw new Error(`Erreur lors de l'envoi de la réservation: ${errorText}`);
                 }
+
+                const result = await response.json();
+                console.log('Réponse de la réservation:', result);
+
+                Swal.fire({
+                    title: 'Réservation envoyée !',
+                    text: 'Vous recevrez bientôt un email de confirmation.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                
+                bookingForm.reset();
             } catch (error) {
-                console.error('Erreur lors de l\'envoi:', error);
+                console.error('Erreur détaillée:', error);
                 Swal.fire({
                     title: 'Erreur',
-                    text: error.message || 'Une erreur est survenue lors de l\'envoi de votre réservation. Veuillez réessayer.',
+                    text: 'Une erreur est survenue lors de la réservation. Veuillez réessayer.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
         });
-
-        // Remplir les sélecteurs d'aéroports
-        const airports = {
-            'DSS': 'Dakar (DSS)',
-            'CDG': 'Paris (CDG)',
-            'DXB': 'Dubai (DXB)',
-            'JFK': 'New York (JFK)',
-            'LHR': 'Londres (LHR)',
-            'IST': 'Istanbul (IST)',
-            'CMN': 'Casablanca (CMN)',
-            'CAI': 'Le Caire (CAI)',
-            'JED': 'Jeddah (JED)',
-            'MED': 'Médine (MED)'
-        };
-
-        const departureSelect = document.getElementById('departure');
-        const destinationSelect = document.getElementById('destination');
-        const layoverSelect = document.getElementById('layover');
-
-        // Fonction pour remplir un sélecteur avec les aéroports
-        function fillAirportSelect(select) {
-            select.innerHTML = '<option value="">Sélectionnez un aéroport</option>';
-            Object.entries(airports).forEach(([code, name]) => {
-                const option = document.createElement('option');
-                option.value = code;
-                option.textContent = name;
-                select.appendChild(option);
-            });
-        }
-
-        fillAirportSelect(departureSelect);
-        fillAirportSelect(destinationSelect);
-        fillAirportSelect(layoverSelect);
+    } else {
+        console.error('Formulaire de réservation non trouvé');
     }
 
-    // Fonction pour fermer le pop-up
-    window.closePopup = function() {
-        const popup = document.getElementById('confirmation-popup');
-        if (popup) {
-            popup.style.display = 'none';
-        }
-    };
+    // Fonction pour réserver une offre spéciale
+    async function reserverOffre(titre, offerId) {
+        console.log('Tentative de réservation pour:', titre, 'ID:', offerId);
+        const { value: formValues } = await Swal.fire({
+            title: 'Réserver ' + titre,
+            html: `
+                <form id="reservation-form" class="form-vertical">
+                    <div class="form-group">
+                        <input type="text" id="swal-name" class="swal2-input" placeholder="Votre nom complet" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="swal-email" class="swal2-input" placeholder="Votre email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="swal-phone" class="swal2-input" placeholder="Votre téléphone" required>
+                    </div>
+                </form>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Réserver',
+            cancelButtonText: 'Annuler',
+            preConfirm: () => {
+                const name = document.getElementById('swal-name').value;
+                const email = document.getElementById('swal-email').value;
+                const phone = document.getElementById('swal-phone').value;
 
-    // Animation des cartes de service
-    const observerOptions = {
-        threshold: 0.1
-    };
+                if (!name || !email || !phone) {
+                    Swal.showValidationMessage('Veuillez remplir tous les champs');
+                    return false;
+                }
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate');
+                return { name, email, phone };
             }
         });
-    }, observerOptions);
 
-    document.querySelectorAll('.service-card').forEach(card => {
-        observer.observe(card);
-    });
+        if (formValues) {
+            try {
+                console.log('Envoi de la réservation:', { ...formValues, offerTitle: titre, offerId });
+                const response = await fetch('http://localhost:5002/api/public/book-offer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...formValues,
+                        offerTitle: titre,
+                        offerId: offerId
+                    })
+                });
 
-    // Données de la galerie
-    const galerieImages = [
-        { 
-            src: 'assets/images/voyage1.jpg',
-            titre: 'Voyage à Paris',
-            date: 'Juin 2023'
-        },
-        { 
-            src: 'assets/images/voyage2.jpg',
-            titre: 'Escapade à Londres',
-            date: 'Août 2023'
-        },
-        { 
-            src: 'assets/images/voyage3.jpg',
-            titre: 'Tour de Tokyo',
-            date: 'Octobre 2023'
-        },
-        { 
-            src: 'assets/images/voyage4.jpg',
-            titre: 'Découverte de New York',
-            date: 'Décembre 2023'
+                if (!response.ok) {
+                    throw new Error('Erreur lors de l\'envoi de la réservation');
+                }
+
+                const result = await response.json();
+                console.log('Réponse de la réservation:', result);
+
+                Swal.fire({
+                    title: 'Réservation envoyée !',
+                    text: 'Vous recevrez bientôt un email de confirmation.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } catch (error) {
+                console.error('Erreur détaillée:', error);
+                Swal.fire({
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue lors de la réservation. Veuillez réessayer.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         }
-    ];
+    }
 
-    // Création de la galerie
-    function creerGalerie() {
-        const galerieGrid = document.querySelector('.galerie-grid');
-        if (!galerieGrid) return;
+    // Remplir les sélecteurs d'aéroports
+    const airports = {
+        'DSS': 'Dakar (DSS)',
+        'CDG': 'Paris (CDG)',
+        'DXB': 'Dubai (DXB)',
+        'JFK': 'New York (JFK)',
+        'LHR': 'Londres (LHR)',
+        'IST': 'Istanbul (IST)',
+        'CMN': 'Casablanca (CMN)',
+        'CAI': 'Le Caire (CAI)',
+        'JED': 'Jeddah (JED)',
+        'MED': 'Médine (MED)'
+    };
 
-        // Créer le modal une seule fois
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        document.body.appendChild(modal);
+    const departureSelect = document.getElementById('departure');
+    const destinationSelect = document.getElementById('destination');
+    const layoverSelect = document.getElementById('layover');
 
-        galerieImages.forEach(img => {
-            const item = document.createElement('div');
-            item.className = 'galerie-item';
-            
-            item.innerHTML = `
-                <img src="${img.src}" alt="${img.titre}">
-                <div class="overlay">
-                    <h3>${img.titre}</h3>
-                    <p>${img.date}</p>
-                </div>
-            `;
-
-            // Ajouter l'événement pour ouvrir le modal
-            item.addEventListener('click', () => {
-                modal.innerHTML = `<img src="${img.src}" alt="${img.titre}">`;
-                modal.classList.add('active');
-            });
-
-            galerieGrid.appendChild(item);
-        });
-
-        // Fermer le modal en cliquant dessus
-        modal.addEventListener('click', () => {
-            modal.classList.remove('active');
+    // Fonction pour remplir un sélecteur avec les aéroports
+    function fillAirportSelect(select) {
+        select.innerHTML = '<option value="">Sélectionnez un aéroport</option>';
+        Object.entries(airports).forEach(([code, name]) => {
+            const option = document.createElement('option');
+            option.value = code;
+            option.textContent = name;
+            select.appendChild(option);
         });
     }
 
-    // Initialiser la galerie au chargement de la page
-    creerGalerie();
-
-    // Animation au scroll pour la galerie
-    const observerOptions2 = {
-        threshold: 0.1
-    };
-
-    const observer2 = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, observerOptions2);
-
-    document.querySelectorAll('.galerie-item').forEach(el => {
-        observer2.observe(el);
-    });
+    fillAirportSelect(departureSelect);
+    fillAirportSelect(destinationSelect);
+    fillAirportSelect(layoverSelect);
 
     // Charger les offres spéciales
     async function loadOffresSpeciales() {
         try {
-            const response = await fetch('/api/offres');
+            console.log('Chargement des offres spéciales...');
+            const response = await fetch('http://localhost:5002/api/public/offers');
             const offres = await response.json();
+            console.log('Offres reçues:', offres);
             
-            const offresContainer = document.querySelector('#offres-speciales .offres-container');
-            if (!offresContainer) return;
+            const offresContainer = document.querySelector('.offres-grid');
+            if (!offresContainer) {
+                console.error('Container des offres non trouvé');
+                return;
+            }
 
             const offresHTML = offres.map(offre => `
                 <div class="offre-card">
-                    <img src="${offre.image}" alt="${offre.titre}">
+                    ${offre.image 
+                        ? `<img src="http://localhost:5002${offre.image}" alt="${offre.title}" onerror="this.src='./assets/images/placeholder.jpg'">`
+                        : `<img src="./assets/images/placeholder.jpg" alt="Image non disponible">`
+                    }
                     <div class="offre-content">
-                        <h3>${offre.titre}</h3>
+                        <h3>${offre.title}</h3>
                         <p>${offre.description}</p>
-                        <div class="prix-container">
-                            <span class="prix">${offre.prix.toLocaleString('fr-FR')} ${offre.devise}</span>
-                            <select class="devise-select" onchange="convertirPrix(this, ${offre.prix}, '${offre.devise}')">
-                                <option value="${offre.devise}" selected>${offre.devise}</option>
-                                <option value="XOF" ${offre.devise === 'XOF' ? 'hidden' : ''}>XOF</option>
-                                <option value="EUR" ${offre.devise === 'EUR' ? 'hidden' : ''}>EUR</option>
-                                <option value="USD" ${offre.devise === 'USD' ? 'hidden' : ''}>USD</option>
-                            </select>
-                        </div>
-                        <button class="btn-reserver" onclick="ouvrirFormulaire('${offre.titre}')">Réserver</button>
+                        <p class="prix">${offre.price} XOF</p>
+                        <button class="reserver-button" onclick="reserverOffre('${offre.title}', '${offre.id}')">Réserver</button>
                     </div>
                 </div>
             `).join('');
-            
+
             offresContainer.innerHTML = offresHTML;
+            console.log('Offres affichées avec succès');
+
+            // Ajouter les gestionnaires d'événements pour les boutons de réservation statiques
+            document.querySelectorAll('.reserver-button').forEach(button => {
+                if (!button.hasAttribute('onclick')) {
+                    const card = button.closest('.offre-card');
+                    const title = card.querySelector('h3').textContent;
+                    button.addEventListener('click', () => {
+                        console.log('Clic sur le bouton réserver pour:', title);
+                        reserverOffre(title, 'static-offer');
+                    });
+                }
+            });
         } catch (error) {
             console.error('Erreur lors du chargement des offres:', error);
+            // Afficher les offres statiques en cas d'erreur
+            const offresContainer = document.querySelector('.offres-grid');
+            if (offresContainer) {
+                const staticOffer = `
+                    <div class="offre-card">
+                        <img src="./assets/images/paris.jpg" alt="Paris">
+                        <div class="offre-content">
+                            <h3>Week-end à Paris</h3>
+                            <p>Découvrez la ville lumière</p>
+                            <p class="prix">299€</p>
+                            <button class="reserver-button" onclick="reserverOffre('Week-end à Paris', 'paris-weekend')">Réserver</button>
+                        </div>
+                    </div>
+                `;
+                offresContainer.innerHTML = staticOffer;
+            }
         }
     }
+
+    // Charger les offres au démarrage
+    loadOffresSpeciales();
 
     // Charger les destinations populaires
     async function loadDestinations() {
@@ -527,8 +522,374 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Charger tout le contenu au chargement de la page
-    loadOffresSpeciales();
     loadDestinations();
     loadVoyagesGroupe();
     loadGroupes();
+
+    // Animation des cartes de service
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.service-card').forEach(card => {
+        observer.observe(card);
+    });
+
+    // Données de la galerie
+    const galerieImages = [
+        { 
+            src: 'assets/images/voyage1.jpg',
+            titre: 'Voyage à Paris',
+            date: 'Juin 2023'
+        },
+        { 
+            src: 'assets/images/voyage2.jpg',
+            titre: 'Escapade à Londres',
+            date: 'Août 2023'
+        },
+        { 
+            src: 'assets/images/voyage3.jpg',
+            titre: 'Tour de Tokyo',
+            date: 'Octobre 2023'
+        },
+        { 
+            src: 'assets/images/voyage4.jpg',
+            titre: 'Découverte de New York',
+            date: 'Décembre 2023'
+        }
+    ];
+
+    // Création de la galerie
+    function creerGalerie() {
+        const galerieGrid = document.querySelector('.galerie-grid');
+        if (!galerieGrid) return;
+
+        // Créer le modal une seule fois
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        document.body.appendChild(modal);
+
+        galerieImages.forEach(img => {
+            const item = document.createElement('div');
+            item.className = 'galerie-item';
+            
+            item.innerHTML = `
+                <img src="${img.src}" alt="${img.titre}">
+                <div class="overlay">
+                    <h3>${img.titre}</h3>
+                    <p>${img.date}</p>
+                </div>
+            `;
+
+            // Ajouter l'événement pour ouvrir le modal
+            item.addEventListener('click', () => {
+                modal.innerHTML = `<img src="${img.src}" alt="${img.titre}">`;
+                modal.classList.add('active');
+            });
+
+            galerieGrid.appendChild(item);
+        });
+
+        // Fermer le modal en cliquant dessus
+        modal.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+    }
+
+    // Initialiser la galerie au chargement de la page
+    creerGalerie();
+
+    // Animation au scroll pour la galerie
+    const observerOptions2 = {
+        threshold: 0.1
+    };
+
+    const observer2 = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions2);
+
+    document.querySelectorAll('.galerie-item').forEach(el => {
+        observer2.observe(el);
+    });
+});
+
+// Gestion du menu burger
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Script chargé et prêt');
+
+    const burgerMenu = document.querySelector('.burger-menu');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (burgerMenu) {
+        console.log('Menu burger trouvé');
+        burgerMenu.addEventListener('click', () => {
+            console.log('Menu burger cliqué');
+            burgerMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+    }
+
+    // Gestion des liens de navigation
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            console.log('Navigation vers:', link.getAttribute('href'));
+            if (burgerMenu.classList.contains('active')) {
+                burgerMenu.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    });
+
+    // Animation du carrousel des logos
+    const logosSlide = document.querySelector('.logos-slide');
+    if (logosSlide) {
+        console.log('Carrousel des logos initialisé');
+        const logos = document.querySelectorAll('.logos-slide img');
+        if (logos.length > 0) {
+            const logoWidth = logos[0].clientWidth;
+            const gap = 50;
+            let currentScroll = 0;
+            const maxScroll = (logos.length / 2) * (logoWidth + gap);
+
+            function scrollLogos() {
+                currentScroll += 1;
+                if (currentScroll >= maxScroll) {
+                    currentScroll = 0;
+                }
+                logosSlide.style.transform = `translateX(-${currentScroll}px)`;
+                requestAnimationFrame(scrollLogos);
+            }
+
+            scrollLogos();
+        }
+    }
+
+    // Gestion du formulaire de réservation de vol
+    const bookingForm = document.getElementById('booking-form');
+    if (bookingForm) {
+        console.log('Formulaire de réservation trouvé');
+        bookingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Soumission du formulaire de réservation de vol...');
+            
+            try {
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    flightDetails: {
+                        departure: document.getElementById('departure').value,
+                        destination: document.getElementById('destination').value,
+                        layover: document.getElementById('layover').value,
+                        travelClass: document.getElementById('travel-class').value,
+                        departureDate: document.getElementById('departure-date').value,
+                        returnDate: document.getElementById('return-date').value,
+                        passengers: document.getElementById('passengers').value
+                    }
+                };
+
+                console.log('Données du formulaire:', formData);
+
+                const response = await fetch('http://localhost:5002/api/public/book-flight', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                console.log('Statut de la réponse:', response.status);
+                const contentType = response.headers.get('content-type');
+                console.log('Type de contenu:', contentType);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Réponse du serveur non-ok:', response.status, errorText);
+                    throw new Error(`Erreur lors de l'envoi de la réservation: ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log('Réponse de la réservation:', result);
+
+                Swal.fire({
+                    title: 'Réservation envoyée !',
+                    text: 'Vous recevrez bientôt un email de confirmation.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                
+                bookingForm.reset();
+            } catch (error) {
+                console.error('Erreur détaillée:', error);
+                Swal.fire({
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue lors de la réservation. Veuillez réessayer.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    } else {
+        console.error('Formulaire de réservation non trouvé');
+    }
+
+    // Fonction pour réserver une offre spéciale
+    window.reserverOffre = async function(titre, offerId) {
+        console.log('Tentative de réservation pour:', titre, 'ID:', offerId);
+        const { value: formValues } = await Swal.fire({
+            title: 'Réserver ' + titre,
+            html: `
+                <form id="reservation-form" class="form-vertical">
+                    <div class="form-group">
+                        <input type="text" id="swal-name" class="swal2-input" placeholder="Votre nom complet" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="swal-email" class="swal2-input" placeholder="Votre email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="swal-phone" class="swal2-input" placeholder="Votre téléphone" required>
+                    </div>
+                </form>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Réserver',
+            cancelButtonText: 'Annuler',
+            preConfirm: () => {
+                const name = document.getElementById('swal-name').value;
+                const email = document.getElementById('swal-email').value;
+                const phone = document.getElementById('swal-phone').value;
+
+                if (!name || !email || !phone) {
+                    Swal.showValidationMessage('Veuillez remplir tous les champs');
+                    return false;
+                }
+
+                return { name, email, phone };
+            }
+        });
+
+        if (formValues) {
+            try {
+                console.log('Envoi de la réservation:', { ...formValues, offerTitle: titre, offerId });
+                const response = await fetch('http://localhost:5002/api/public/book-offer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ...formValues,
+                        offerTitle: titre,
+                        offerId: offerId
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Réponse du serveur non-ok:', response.status, errorText);
+                    throw new Error(`Erreur lors de l'envoi de la réservation: ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log('Réponse de la réservation:', result);
+
+                Swal.fire({
+                    title: 'Réservation envoyée !',
+                    text: 'Vous recevrez bientôt un email de confirmation.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } catch (error) {
+                console.error('Erreur détaillée:', error);
+                Swal.fire({
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue lors de la réservation. Veuillez réessayer.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    };
+
+    // Charger les offres spéciales
+    async function loadOffresSpeciales() {
+        try {
+            console.log('Chargement des offres spéciales...');
+            const response = await fetch('http://localhost:5002/api/public/offers');
+            const offres = await response.json();
+            console.log('Offres reçues:', offres);
+            
+            const offresContainer = document.querySelector('.offres-grid');
+            if (!offresContainer) {
+                console.error('Container des offres non trouvé');
+                return;
+            }
+
+            const offresHTML = offres.map(offre => `
+                <div class="offre-card">
+                    ${offre.image 
+                        ? `<img src="http://localhost:5002${offre.image}" alt="${offre.title}" onerror="this.src='./assets/images/placeholder.jpg'">`
+                        : `<img src="./assets/images/placeholder.jpg" alt="Image non disponible">`
+                    }
+                    <div class="offre-content">
+                        <h3>${offre.title}</h3>
+                        <p>${offre.description}</p>
+                        <p class="prix">${offre.price} XOF</p>
+                        <button class="reserver-button" onclick="reserverOffre('${offre.title}', '${offre.id}')">Réserver</button>
+                    </div>
+                </div>
+            `).join('');
+
+            offresContainer.innerHTML = offresHTML;
+            console.log('Offres affichées avec succès');
+
+            // Ajouter les gestionnaires d'événements pour les boutons de réservation statiques
+            document.querySelectorAll('.reserver-button').forEach(button => {
+                if (!button.hasAttribute('onclick')) {
+                    const card = button.closest('.offre-card');
+                    const title = card.querySelector('h3').textContent;
+                    button.addEventListener('click', () => {
+                        console.log('Clic sur le bouton réserver pour:', title);
+                        reserverOffre(title, 'static-offer');
+                    });
+                }
+            });
+        } catch (error) {
+            console.error('Erreur lors du chargement des offres:', error);
+            // Afficher les offres statiques en cas d'erreur
+            const offresContainer = document.querySelector('.offres-grid');
+            if (offresContainer) {
+                const staticOffer = `
+                    <div class="offre-card">
+                        <img src="./assets/images/paris.jpg" alt="Paris">
+                        <div class="offre-content">
+                            <h3>Week-end à Paris</h3>
+                            <p>Découvrez la ville lumière</p>
+                            <p class="prix">299€</p>
+                            <button class="reserver-button" onclick="reserverOffre('Week-end à Paris', 'paris-weekend')">Réserver</button>
+                        </div>
+                    </div>
+                `;
+                offresContainer.innerHTML = staticOffer;
+            }
+        }
+    }
+
+    // Charger les offres au démarrage
+    loadOffresSpeciales();
+
+    console.log('Initialisation terminée');
 });

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1733848654095",
+    "title": "Oumrah",
+    "description": "Ceci est un test",
+    "price": "2 500 000",
+    "image": "/uploads/1733848654087-1c8d2200-072c-4ad0-b733-c1c8d5dd5c5f.JPG"
+  },
+  {
+    "id": "1733848835550",
+    "title": "Oumrah",
+    "description": "Test",
+    "price": "2500000",
+    "image": null
+  }
+]
