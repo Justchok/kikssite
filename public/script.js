@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 console.log('Données du formulaire:', formData);
 
-                const response = await fetch('http://localhost:5002/api/public/book-flight', {
+                const response = await fetch('/api/public/book-flight', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (formValues) {
             try {
                 console.log('Envoi de la réservation:', { ...formValues, offerTitle: titre, offerId });
-                const response = await fetch('http://localhost:5002/api/public/book-offer', {
+                const response = await fetch('/api/public/book-offer', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadOffresSpeciales() {
         try {
             console.log('Chargement des offres spéciales...');
-            const response = await fetch('http://localhost:5002/api/public/offers');
+            const response = await fetch('/api/public/offers');
             const offres = await response.json();
             console.log('Offres reçues:', offres);
             
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const offresHTML = offres.map(offre => `
                 <div class="offre-card">
                     ${offre.image 
-                        ? `<img src="http://localhost:5002${offre.image}" alt="${offre.title}" onerror="this.src='./assets/images/placeholder.jpg'">`
+                        ? `<img src="${offre.image}" alt="${offre.title}" onerror="this.src='./assets/images/placeholder.jpg'">`
                         : `<img src="./assets/images/placeholder.jpg" alt="Image non disponible">`
                     }
                     <div class="offre-content">
@@ -701,7 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 console.log('Données du formulaire:', formData);
 
-                const response = await fetch('http://localhost:5002/api/public/book-flight', {
+                const response = await fetch('/api/public/book-flight', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -744,152 +744,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Formulaire de réservation non trouvé');
     }
-
-    // Fonction pour réserver une offre spéciale
-    window.reserverOffre = async function(titre, offerId) {
-        console.log('Tentative de réservation pour:', titre, 'ID:', offerId);
-        const { value: formValues } = await Swal.fire({
-            title: 'Réserver ' + titre,
-            html: `
-                <form id="reservation-form" class="form-vertical">
-                    <div class="form-group">
-                        <input type="text" id="swal-name" class="swal2-input" placeholder="Votre nom complet" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="swal-email" class="swal2-input" placeholder="Votre email" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="tel" id="swal-phone" class="swal2-input" placeholder="Votre téléphone" required>
-                    </div>
-                </form>
-            `,
-            focusConfirm: false,
-            showCancelButton: true,
-            confirmButtonText: 'Réserver',
-            cancelButtonText: 'Annuler',
-            preConfirm: () => {
-                const name = document.getElementById('swal-name').value;
-                const email = document.getElementById('swal-email').value;
-                const phone = document.getElementById('swal-phone').value;
-
-                if (!name || !email || !phone) {
-                    Swal.showValidationMessage('Veuillez remplir tous les champs');
-                    return false;
-                }
-
-                return { name, email, phone };
-            }
-        });
-
-        if (formValues) {
-            try {
-                console.log('Envoi de la réservation:', { ...formValues, offerTitle: titre, offerId });
-                const response = await fetch('http://localhost:5002/api/public/book-offer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        ...formValues,
-                        offerTitle: titre,
-                        offerId: offerId
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Réponse du serveur non-ok:', response.status, errorText);
-                    throw new Error(`Erreur lors de l'envoi de la réservation: ${errorText}`);
-                }
-
-                const result = await response.json();
-                console.log('Réponse de la réservation:', result);
-
-                Swal.fire({
-                    title: 'Réservation envoyée !',
-                    text: 'Vous recevrez bientôt un email de confirmation.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            } catch (error) {
-                console.error('Erreur détaillée:', error);
-                Swal.fire({
-                    title: 'Erreur',
-                    text: 'Une erreur est survenue lors de la réservation. Veuillez réessayer.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        }
-    };
-
-    // Charger les offres spéciales
-    async function loadOffresSpeciales() {
-        try {
-            console.log('Chargement des offres spéciales...');
-            const response = await fetch('http://localhost:5002/api/public/offers');
-            const offres = await response.json();
-            console.log('Offres reçues:', offres);
-            
-            const offresContainer = document.querySelector('.offres-grid');
-            if (!offresContainer) {
-                console.error('Container des offres non trouvé');
-                return;
-            }
-
-            const offresHTML = offres.map(offre => `
-                <div class="offre-card">
-                    ${offre.image 
-                        ? `<img src="http://localhost:5002${offre.image}" alt="${offre.title}" onerror="this.src='./assets/images/placeholder.jpg'">`
-                        : `<img src="./assets/images/placeholder.jpg" alt="Image non disponible">`
-                    }
-                    <div class="offre-content">
-                        <h3>${offre.title}</h3>
-                        <p>${offre.description}</p>
-                        <p class="prix">${offre.price} XOF</p>
-                        <button class="reserver-button" onclick="reserverOffre('${offre.title}', '${offre.id}')">Réserver</button>
-                    </div>
-                </div>
-            `).join('');
-
-            offresContainer.innerHTML = offresHTML;
-            console.log('Offres affichées avec succès');
-
-            // Ajouter les gestionnaires d'événements pour les boutons de réservation statiques
-            document.querySelectorAll('.reserver-button').forEach(button => {
-                if (!button.hasAttribute('onclick')) {
-                    const card = button.closest('.offre-card');
-                    const title = card.querySelector('h3').textContent;
-                    button.addEventListener('click', () => {
-                        console.log('Clic sur le bouton réserver pour:', title);
-                        reserverOffre(title, 'static-offer');
-                    });
-                }
-            });
-        } catch (error) {
-            console.error('Erreur lors du chargement des offres:', error);
-            // Afficher les offres statiques en cas d'erreur
-            const offresContainer = document.querySelector('.offres-grid');
-            if (offresContainer) {
-                const staticOffer = `
-                    <div class="offre-card">
-                        <img src="./assets/images/paris.jpg" alt="Paris">
-                        <div class="offre-content">
-                            <h3>Week-end à Paris</h3>
-                            <p>Découvrez la ville lumière</p>
-                            <p class="prix">299€</p>
-                            <button class="reserver-button" onclick="reserverOffre('Week-end à Paris', 'paris-weekend')">Réserver</button>
-                        </div>
-                    </div>
-                `;
-                offresContainer.innerHTML = staticOffer;
-            }
-        }
-    }
-
-    // Charger les offres au démarrage
-    loadOffresSpeciales();
 
     console.log('Initialisation terminée');
 });
